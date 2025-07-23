@@ -1,10 +1,14 @@
 package dev.vladsv.action;
 
+import dev.vladsv.Coordinate;
 import dev.vladsv.entity.Creature;
+import dev.vladsv.entity.Entity;
 import dev.vladsv.entity.Grass;
 import dev.vladsv.entity.Herbivore;
 import dev.vladsv.map.GameMap;
 import dev.vladsv.util.SearchUtils;
+
+import java.util.Map;
 
 public class CreaturePathSearchAction extends Action {
 
@@ -14,14 +18,16 @@ public class CreaturePathSearchAction extends Action {
 
     @Override
     public void execute() {
-        map.getEntities().entrySet().stream()
-                .filter(entry ->
-                        entry.getValue() instanceof Creature creature && !creature.hasPath())
-                .forEach(entry -> {
-                    Creature creature = (Creature) entry.getValue();
-                    creature.setPath(creature instanceof Herbivore ?
-                            SearchUtils.findByType(entry.getKey(), map, Grass.class) :
-                            SearchUtils.findByType(entry.getKey(), map, Herbivore.class));
-                });
+        findPath();
+    }
+
+    private void findPath() {
+        for (Map.Entry<Coordinate, Entity> entry : map.entrySet()) {
+            if (entry.getValue() instanceof Creature creature && !creature.hasPath()) {
+                creature.setPath(creature instanceof Herbivore ?
+                        SearchUtils.findByType(entry.getKey(), map, Grass.class) :
+                        SearchUtils.findByType(entry.getKey(), map, Herbivore.class));
+            }
+        }
     }
 }

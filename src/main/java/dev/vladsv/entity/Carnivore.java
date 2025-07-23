@@ -15,23 +15,24 @@ public final class Carnivore extends Creature {
     public Carnivore(int speedPerCell,
                      int healthPoints,
                      int foodPoints,
-                     int attackStrength) {
-        super(speedPerCell, healthPoints, foodPoints);
+                     int attackStrength,
+                     Coordinate position) {
+        super(speedPerCell, healthPoints, foodPoints, position);
         this.attackStrength = attackStrength;
     }
 
     @Override
     public MovementIntent makeMove(GameMap gameMap) {
-        Map<Coordinate, Entity> entities = gameMap.getEntities();
-        Coordinate current = path.getFirst();
-
-        for (Coordinate neighbour : CoordinateUtils.getNeighbourCoordinates(current)) {
-            if (entities.get(neighbour) instanceof Herbivore) {
-                return new MovementIntent(MovementType.CONSUME, current, neighbour);
+        for (Coordinate neighbour : CoordinateUtils.getNeighbourCoordinates(position)) {
+            if (gameMap.getEntity(neighbour) instanceof Herbivore) {
+                return new MovementIntent(MovementType.CONSUME, position, neighbour);
             }
         }
 
-        return new MovementIntent(MovementType.MOVE, path.removeFirst(), path.getFirst());
+        Coordinate prev = position;
+        position = path.removeFirst();
+
+        return new MovementIntent(MovementType.MOVE, prev, position);
     }
 
     @Override

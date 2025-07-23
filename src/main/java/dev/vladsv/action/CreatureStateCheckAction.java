@@ -17,7 +17,7 @@ public class CreatureStateCheckAction extends Action {
     }
 
     private List<Creature> getCreatures() {
-        return map.getEntities().values().stream()
+        return map.getEntities().stream()
                 .filter(Creature.class::isInstance)
                 .map(Creature.class::cast)
                 .toList();
@@ -25,7 +25,7 @@ public class CreatureStateCheckAction extends Action {
 
     private void sweep(Creature creature) {
         if (!creature.isAlive()) {
-            map.getEntities().remove(creature.getPath().getFirst());
+            map.removeEntity(creature.getPosition());
         }
     }
 }

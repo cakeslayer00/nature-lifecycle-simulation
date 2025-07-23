@@ -10,8 +10,8 @@ public final class ConsoleRenderer implements Renderer {
 
     @Override
     public void render(GameMap gameMap) {
-        for (int i = 0; i < Simulation.LOWER_BOUND; i++) {
-            for (int j = 0; j < Simulation.RIGHT_BOUND; j++) {
+        for (int i = 0; i < Simulation.MAP_HEIGHT; i++) {
+            for (int j = 0; j < Simulation.MAP_WIDTH; j++) {
                 Entity entity = gameMap.getEntity(new Coordinate(j, i));
 
                 switch (entity) {

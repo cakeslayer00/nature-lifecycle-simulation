@@ -50,7 +50,7 @@ public class CreatureMoveAction extends Action {
     }
 
     private List<Creature> getCreatures() {
-        return map.getEntities().values().stream()
+        return map.getEntities().stream()
                 .filter(Creature.class::isInstance)
                 .map(Creature.class::cast)
                 .toList();

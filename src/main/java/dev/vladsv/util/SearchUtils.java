@@ -31,7 +31,7 @@ public class SearchUtils {
                 visited.add(neighbor);
                 parent.put(neighbor, current);
 
-                Entity entity = map.getEntities().get(neighbor);
+                Entity entity = map.getEntity(neighbor);
                 if (targetType.isInstance(entity)) {
                     return constructPath(parent, neighbor);
                 }
@@ -46,7 +46,7 @@ public class SearchUtils {
     private static <T extends Entity> boolean isValidCoordinate(GameMap map,
                                                                 Class<T> targetType,
                                                                 Coordinate coordinate) {
-        Entity entity = map.getEntities().get(coordinate);
+        Entity entity = map.getEntity(coordinate);
         return (entity == null || targetType.isInstance(entity))
                 && !CoordinateUtils.isOutOfBounds(coordinate);
     }
@@ -58,6 +58,7 @@ public class SearchUtils {
             path.add(target);
             target = map.get(target);
         }
+        path.removeLast();
         return path.reversed();
     }
 

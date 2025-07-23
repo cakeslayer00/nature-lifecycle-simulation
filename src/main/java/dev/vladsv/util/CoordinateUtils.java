@@ -24,7 +24,7 @@ public class CoordinateUtils {
 
     public static boolean isOutOfBounds(Coordinate coordinate) {
         return (coordinate.x() < 0 || coordinate.y() < 0) ||
-                (coordinate.x() >= Simulation.RIGHT_BOUND || coordinate.y() >= Simulation.LOWER_BOUND);
+                (coordinate.x() >= Simulation.MAP_WIDTH || coordinate.y() >= Simulation.MAP_HEIGHT);
     }
 
 }

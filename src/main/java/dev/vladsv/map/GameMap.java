@@ -3,7 +3,9 @@ package dev.vladsv.map;
 import dev.vladsv.Coordinate;
 import dev.vladsv.entity.Entity;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public interface GameMap {
 
@@ -13,5 +15,7 @@ public interface GameMap {
 
     Entity removeEntity(Coordinate coordinate);
 
-    Map<Coordinate, Entity> getEntities();
+    Collection<Entity> getEntities();
+
+    Set<Map.Entry<Coordinate, Entity>> entrySet();
 }
