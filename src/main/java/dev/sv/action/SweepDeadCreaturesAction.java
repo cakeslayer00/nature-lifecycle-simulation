@@ -1,0 +1,27 @@
+package dev.sv.action;
+
+import dev.sv.Coordinate;
+import dev.sv.entity.Creature;
+import dev.sv.map.GameMap;
+import dev.sv.util.ActionUtils;
+
+import java.util.List;
+
+public class SweepDeadCreaturesAction extends Action {
+    public SweepDeadCreaturesAction(GameMap gameMap) {
+        super(gameMap);
+    }
+
+    @Override
+    public void execute() {
+        List<Creature> creatures = ActionUtils.gatherCreatures(gameMap);
+
+        creatures.forEach(creature -> {
+            if (creature.isDead()) {
+                Coordinate pos = creature.getPosition();
+                gameMap.removeEntity(pos);
+                gameMap.putEntity(pos, null);
+            }
+        });
+    }
+}
