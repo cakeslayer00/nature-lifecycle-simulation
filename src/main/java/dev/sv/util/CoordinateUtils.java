@@ -1,11 +1,12 @@
 package dev.sv.util;
 
 import dev.sv.Coordinate;
-import dev.sv.Simulation;
 
 import java.util.List;
 
-public class CoordinateUtils {
+public final class CoordinateUtils {
+
+    private CoordinateUtils() {}
 
     public static List<Coordinate> getSurroundingCoordinates(Coordinate pos) {
 
@@ -20,13 +21,15 @@ public class CoordinateUtils {
 
     }
 
-    public static boolean isOutOfBounds(Coordinate pos) {
+    public static boolean isOutOfBounds(Coordinate pos,
+                                        int horizontal,
+                                        int vertical) {
         if (pos == null) {
             return false;
         }
 
         return pos.x() < 0 || pos.y() < 0
-                || pos.x() >= Simulation.VERTICAL_BOUND
-                || pos.y() >= Simulation.HORIZONTAL_BOUND;
+                || pos.x() >= vertical
+                || pos.y() >= horizontal;
     }
 }

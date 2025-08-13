@@ -9,10 +9,10 @@ import java.util.*;
 
 public class BFSSearchService implements SearchService {
 
-    private final GameMap map;
+    private final GameMap gameMap;
 
-    public BFSSearchService(GameMap map) {
-        this.map = map;
+    public BFSSearchService(GameMap gameMap) {
+        this.gameMap = gameMap;
     }
 
     @Override
@@ -31,14 +31,18 @@ public class BFSSearchService implements SearchService {
                     continue;
                 }
 
-                if (!isValidCoordinate(target, neighbor)) {
+                if (!isValidCoordinate(
+                        target,
+                        neighbor,
+                        gameMap.getHorizontalBound(),
+                        gameMap.getVerticalBound())) {
                     continue;
                 }
 
                 visited.add(neighbor);
                 parent.put(neighbor, current);
 
-                Entity entity = map.getEntity(neighbor);
+                Entity entity = gameMap.getEntity(neighbor);
                 if (target.isInstance(entity)) {
                     return constructPath(parent, neighbor);
                 }
@@ -51,10 +55,11 @@ public class BFSSearchService implements SearchService {
     }
 
     private boolean isValidCoordinate(Class<? extends Entity> target,
-                                      Coordinate coordinate) {
-        Entity entity = map.getEntity(coordinate);
+                                      Coordinate coordinate,
+                                      int horizontal, int vertical) {
+        Entity entity = gameMap.getEntity(coordinate);
         return (entity == null || target.isInstance(entity))
-                && !CoordinateUtils.isOutOfBounds(coordinate);
+                && !CoordinateUtils.isOutOfBounds(coordinate, horizontal, vertical);
     }
 
     private List<Coordinate> constructPath(Map<Coordinate, Coordinate> map,

@@ -1,9 +1,16 @@
 package dev.sv.action;
 
+import dev.sv.entity.Grass;
+import dev.sv.entity.Prey;
 import dev.sv.map.GameMap;
 import dev.sv.util.ActionUtils;
 
 public class MaintenanceSpawnAction extends SpawnAction {
+
+    private static final int GRASS_COUNT = 3;
+    private static final int TO_GENERATE_GRASS_AMOUNT = 2;
+    private static final int PREY_COUNT = 4;
+    private static final int TO_GENERATE_PREY_AMOUNT = 2;
 
     public MaintenanceSpawnAction(GameMap gameMap) {
         super(gameMap);
@@ -16,18 +23,18 @@ public class MaintenanceSpawnAction extends SpawnAction {
     }
 
     private void maintainPrey() {
-        int count = ActionUtils.gatherPrey(gameMap).size();
+        int count = ActionUtils.gatherTargetEntities(gameMap, Prey.class).size();
 
-        if (count < 3) {
-            generatePrey(2);
+        if (count < PREY_COUNT) {
+            spawn(gameMap, (coordinate -> new Prey(1,1,coordinate)), TO_GENERATE_PREY_AMOUNT);
         }
     }
 
     private void maintainGrass() {
-        int count = ActionUtils.gatherGrass(gameMap).size();
+        int count = ActionUtils.gatherTargetEntities(gameMap, Grass.class).size();
 
-        if (count < 4) {
-            generateGrass(2);
+        if (count < GRASS_COUNT) {
+            spawn(gameMap, (_ -> new Grass()), TO_GENERATE_GRASS_AMOUNT);
         }
     }
 

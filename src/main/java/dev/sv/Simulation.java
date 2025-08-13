@@ -1,17 +1,14 @@
 package dev.sv;
 
 import dev.sv.action.*;
-import dev.sv.map.GameMapImpl;
-import dev.sv.renderer.ConsoleRenderer;
+import dev.sv.map.GameMap;
+import dev.sv.renderer.Renderer;
 import dev.sv.search.BFSSearchService;
 
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Simulation {
-
-    public static final int HORIZONTAL_BOUND = 10;
-    public static final int VERTICAL_BOUND = 10;
 
     private static final int SIMULATION_DELAY_MS = 500;
     private static final int PAUSED_CHECK_DELAY_MS = 100;
@@ -20,31 +17,35 @@ public class Simulation {
 
     private final AtomicBoolean paused = new AtomicBoolean(false);
     private final AtomicBoolean running = new AtomicBoolean(true);
+    private final Renderer renderer;
+    private final GameMap gameMap;
 
-    public void run() {
-        GameMapImpl map = new GameMapImpl();
-        ConsoleRenderer consoleRenderer = new ConsoleRenderer(map);
+    public Simulation(GameMap gameMap, Renderer renderer) {
+        this.gameMap = gameMap;
+        this.renderer = renderer;
+    }
 
-        InitialSpawnAction initialSpawn = new InitialSpawnAction(map);
+    public void start() {
+        InitialSpawnAction initialSpawn = new InitialSpawnAction(gameMap);
         Action[] actions = {
-                new FindPathAction(map, new BFSSearchService(map)),
-                new MoveAction(map),
-                new SweepDeadCreaturesAction(map),
-                new MaintenanceSpawnAction(map)
+                new FindPathAction(gameMap, new BFSSearchService(gameMap)),
+                new MoveAction(gameMap),
+                new SweepDeadCreaturesAction(gameMap),
+                new MaintenanceSpawnAction(gameMap)
         };
 
         try (Scanner scanner = new Scanner(System.in)) {
             startInputHandler(scanner);
 
             initialSpawn.execute();
-            consoleRenderer.render();
+            renderer.render();
             printDelimiter();
             sleep(INITIAL_DELAY_MS);
 
             while (running.get()) {
                 if (!paused.get()) {
                     executeGameCycle(actions);
-                    consoleRenderer.render();
+                    renderer.render();
                     printDelimiter();
                     sleep(SIMULATION_DELAY_MS);
                 } else {
@@ -119,4 +120,5 @@ public class Simulation {
             running.set(false);
         }
     }
+
 }

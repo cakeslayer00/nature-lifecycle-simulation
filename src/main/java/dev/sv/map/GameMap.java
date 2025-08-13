@@ -12,4 +12,8 @@ public interface GameMap {
     void removeEntity(Coordinate coordinate);
 
     boolean contains(Coordinate coordinate);
+
+    int getVerticalBound();
+
+    int getHorizontalBound();
 }

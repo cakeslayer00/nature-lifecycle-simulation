@@ -1,5 +1,6 @@
 package dev.sv.action;
 
+import dev.sv.entity.*;
 import dev.sv.map.GameMap;
 
 public class InitialSpawnAction extends SpawnAction {
@@ -16,10 +17,10 @@ public class InitialSpawnAction extends SpawnAction {
 
     @Override
     public void execute() {
-        generateTree(TREE_COUNT);
-        generateGrass(GRASS_COUNT);
-        generateRock(ROCK_COUNT);
-        generatePredator(PREDATOR_COUNT);
-        generatePrey(PREY_COUNT);
+        spawn(gameMap, (_ -> new Rock()), ROCK_COUNT);
+        spawn(gameMap, (_ -> new Grass()), GRASS_COUNT);
+        spawn(gameMap, (_ -> new Tree()), TREE_COUNT);
+        spawn(gameMap, (coordinate -> new Predator(1, 1, 4, coordinate)), PREDATOR_COUNT);
+        spawn(gameMap, (coordinate -> new Prey(1, 1, coordinate)), PREY_COUNT);
     }
 }

@@ -19,7 +19,7 @@ public class MoveAction extends Action {
 
     @Override
     public void execute() {
-        List<Creature> creatures = ActionUtils.gatherCreatures(gameMap);
+        List<Creature> creatures = ActionUtils.gatherTargetEntities(gameMap, Creature.class);
 
         Map<MoveIntent, Creature> map = new HashMap<>();
         for (Creature creature : creatures) {
@@ -36,9 +36,9 @@ public class MoveAction extends Action {
             MoveIntent intent = entry.getKey();
             if (intent.intent() == Intent.TRAVEL) {
                 Creature value = entry.getValue();
-                gameMap.removeEntity(value.getPosition());
-                value.setPosition(intent.targetPosition());
-                gameMap.putEntity(value.getPosition(), value);
+                gameMap.removeEntity(value.getCoordinate());
+                value.setCoordinate(intent.targetPosition());
+                gameMap.putEntity(value.getCoordinate(), value);
             }
         }
     }

@@ -1,11 +1,11 @@
 package dev.sv.action;
 
 import dev.sv.Coordinate;
-import dev.sv.Simulation;
 import dev.sv.entity.*;
 import dev.sv.map.GameMap;
 
 import java.util.Random;
+import java.util.function.Function;
 
 public abstract class SpawnAction extends Action {
 
@@ -16,95 +16,26 @@ public abstract class SpawnAction extends Action {
         this.random = new Random();
     }
 
-    protected void generatePredator(int count) {
-        for (int i = 0; i < count; i++) {
-            int tries = 100;
-            while (tries-- > 0) {
-                int x = random.nextInt(Simulation.VERTICAL_BOUND);
-                int y = random.nextInt(Simulation.HORIZONTAL_BOUND);
-
-                Coordinate curr = new Coordinate(x, y);
-                if (!gameMap.contains(curr)) {
-                    Predator entity = new Predator(1, 10, 4);
-                    entity.setPosition(curr);
-                    gameMap.putEntity(curr, entity);
-                    break;
-                }
-            }
+    protected void spawn(GameMap gameMap, Function<Coordinate, Entity> mapper, int amount) {
+        for (int i = 0; i < amount; i++) {
+            Coordinate coordinate = getRandomEmptyCoordinate(gameMap);
+            Entity entity = mapper.apply(coordinate);
+            gameMap.putEntity(coordinate, entity);
         }
     }
 
-    protected void generatePrey(int count) {
-        for (int i = 0; i < count; i++) {
-            int tries = 100;
-            while (tries-- > 0) {
-                int x = random.nextInt(Simulation.VERTICAL_BOUND);
-                int y = random.nextInt(Simulation.HORIZONTAL_BOUND);
+    private Coordinate getRandomEmptyCoordinate(GameMap gameMap) {
+        int tries = 100;
+        while (tries-- > 0) {
+            int x = random.nextInt(gameMap.getVerticalBound());
+            int y = random.nextInt(gameMap.getHorizontalBound());
 
-                Coordinate curr = new Coordinate(x, y);
-                if (!gameMap.contains(curr)) {
-                    Prey entity = new Prey(1, 10);
-                    entity.setPosition(curr);
-                    gameMap.putEntity(curr, entity);
-                    break;
-                }
+            Coordinate curr = new Coordinate(x, y);
+            if (!gameMap.contains(curr)) {
+                return curr;
             }
         }
+        throw new IllegalStateException("There's no fucking empty cell apparently");
     }
-
-    protected void generateGrass(int count) {
-        for (int i = 0; i < count; i++) {
-            int tries = 100;
-            while (tries-- > 0) {
-                int x = random.nextInt(Simulation.VERTICAL_BOUND);
-                int y = random.nextInt(Simulation.HORIZONTAL_BOUND);
-
-                Coordinate curr = new Coordinate(x, y);
-                if (!gameMap.contains(curr)) {
-                    Grass entity = new Grass();
-                    entity.setPosition(curr);
-                    gameMap.putEntity(curr, entity);
-                    break;
-                }
-            }
-        }
-    }
-
-    protected void generateRock(int count) {
-        for (int i = 0; i < count; i++) {
-            int tries = 100;
-            while (tries-- > 0) {
-                int x = random.nextInt(Simulation.VERTICAL_BOUND);
-                int y = random.nextInt(Simulation.HORIZONTAL_BOUND);
-
-                Coordinate curr = new Coordinate(x, y);
-                if (!gameMap.contains(curr)) {
-                    Rock entity = new Rock();
-                    entity.setPosition(curr);
-                    gameMap.putEntity(curr, entity);
-                    break;
-                }
-            }
-        }
-    }
-
-    protected void generateTree(int count) {
-        for (int i = 0; i < count; i++) {
-            int tries = 100;
-            while (tries-- > 0) {
-                int x = random.nextInt(Simulation.VERTICAL_BOUND);
-                int y = random.nextInt(Simulation.HORIZONTAL_BOUND);
-
-                Coordinate curr = new Coordinate(x, y);
-                if (!gameMap.contains(curr)) {
-                    Tree entity = new Tree();
-                    entity.setPosition(curr);
-                    gameMap.putEntity(curr, entity);
-                    break;
-                }
-            }
-        }
-    }
-
 
 }

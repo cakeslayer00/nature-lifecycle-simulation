@@ -19,17 +19,11 @@ public class FindPathAction extends Action {
 
     @Override
     public void execute() {
-        List<Creature> creatures = ActionUtils.gatherCreatures(gameMap);
+        List<Creature> creatures = ActionUtils.gatherTargetEntities(gameMap, Creature.class);
 
         for (Creature creature : creatures) {
-            Coordinate coordinate = creature.getPosition();
-
-            List<Coordinate> path = switch (creature) {
-                case Predator _ -> searchService.search(coordinate, Prey.class);
-                case Prey _ -> searchService.search(coordinate, Grass.class);
-                default -> throw new RuntimeException("Invalid creature type");
-            };
-
+            Coordinate coordinate = creature.getCoordinate();
+            List<Coordinate> path = searchService.search(coordinate, creature.getTargetConsumption());
             creature.setPath(path);
         }
     }
