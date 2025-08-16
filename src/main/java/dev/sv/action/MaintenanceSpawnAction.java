@@ -26,7 +26,7 @@ public class MaintenanceSpawnAction extends SpawnAction {
         int count = ActionUtils.gatherTargetEntities(gameMap, Prey.class).size();
 
         if (count < PREY_COUNT) {
-            spawn(gameMap, (coordinate -> new Prey(1,1,coordinate)), TO_GENERATE_PREY_AMOUNT);
+            spawn(gameMap, (coordinate -> new Prey(PREY_SPEED, PREY_HEALTH, coordinate)), TO_GENERATE_PREY_AMOUNT);
         }
     }
 

@@ -9,6 +9,12 @@ import java.util.function.Function;
 
 public abstract class SpawnAction extends Action {
 
+    protected static final int PREDATOR_SPEED = 1;
+    protected static final int PREDATOR_HEALTH = 1;
+    protected static final int PREY_SPEED = 1;
+    protected static final int PREY_HEALTH = 1;
+    protected static final int PREDATOR_ATTACK_STRENGTH = 4;
+
     private final Random random;
 
     public SpawnAction(GameMap gameMap) {
@@ -31,7 +37,7 @@ public abstract class SpawnAction extends Action {
             int y = random.nextInt(gameMap.getHorizontalBound());
 
             Coordinate curr = new Coordinate(x, y);
-            if (!gameMap.contains(curr)) {
+            if (!gameMap.containsEntity(curr)) {
                 return curr;
             }
         }

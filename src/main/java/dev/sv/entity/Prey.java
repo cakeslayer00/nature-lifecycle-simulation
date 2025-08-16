@@ -1,43 +1,24 @@
 package dev.sv.entity;
 
 import dev.sv.Coordinate;
-import dev.sv.Intent;
-import dev.sv.MoveIntent;
 import dev.sv.map.GameMap;
-import dev.sv.util.CoordinateUtils;
 
-import java.util.List;
+public class Prey extends Creature {
 
-public class Prey extends Creature{
+    public static final int HEALTH_GAIN = 2;
 
     public Prey(int speed, int health, Coordinate coordinate) {
         super(speed, health, coordinate);
     }
 
     @Override
-    public MoveIntent makeMove(GameMap map) {
-        List<Coordinate> surroundingCoords = CoordinateUtils.getSurroundingCoordinates(coordinate);
-
-        for (Coordinate coordinate : surroundingCoords) {
-            Entity entity = map.getEntity(coordinate);
-            if (entity == null) {
-                continue;
-            }
-
-            if (entity instanceof Grass) {
-                return new MoveIntent(Intent.CONSUME, coordinate);
-            }
-        }
-
-        if (path.isEmpty()) {
-            return new MoveIntent(Intent.STUCK, coordinate);
-        }
-
-        return new MoveIntent(Intent.TRAVEL, path.removeFirst());
+    protected void consume(GameMap gameMap, Coordinate targetCoordinate) {
+        gameMap.removeEntity(targetCoordinate);
+        gainHealth(HEALTH_GAIN);
     }
 
     @Override
-    public Class<? extends Entity> getTargetConsumption() {
+    protected Class<Grass> getTargetConsumption() {
         return Grass.class;
     }
 

@@ -7,6 +7,8 @@ import dev.sv.util.CoordinateUtils;
 
 import java.util.*;
 
+import static dev.sv.util.CoordinateUtils.isOutOfBounds;
+
 public class BFSSearchService implements SearchService {
 
     private final GameMap gameMap;
@@ -23,43 +25,44 @@ public class BFSSearchService implements SearchService {
         Map<Coordinate, Coordinate> parent = new HashMap<>();
 
         while (!queue.isEmpty()) {
-            Coordinate current = queue.poll();
-            List<Coordinate> neighbors = CoordinateUtils.getSurroundingCoordinates(current);
+            Coordinate currentCoordinate = queue.poll();
+            List<Coordinate> coordinates = CoordinateUtils.getSurroundingCoordinates(currentCoordinate);
 
-            for (Coordinate neighbor : neighbors) {
-                if (visited.contains(neighbor)) {
+            for (Coordinate neighbourCoordinate : coordinates) {
+                if (visited.contains(neighbourCoordinate)) {
                     continue;
                 }
 
-                if (!isValidCoordinate(
-                        target,
-                        neighbor,
-                        gameMap.getHorizontalBound(),
-                        gameMap.getVerticalBound())) {
+                if (isOutOfBounds(neighbourCoordinate, gameMap.getHorizontalBound(), gameMap.getVerticalBound())) {
                     continue;
                 }
 
-                visited.add(neighbor);
-                parent.put(neighbor, current);
-
-                Entity entity = gameMap.getEntity(neighbor);
-                if (target.isInstance(entity)) {
-                    return constructPath(parent, neighbor);
+                if (!isTargetOrEmptyCoordinate(target, neighbourCoordinate)) {
+                    continue;
                 }
 
-                queue.offer(neighbor);
+                visited.add(neighbourCoordinate);
+                parent.put(neighbourCoordinate, currentCoordinate);
+
+                Optional<Entity> opt = gameMap.getEntity(neighbourCoordinate);
+                if (opt.isPresent()) {
+                    Entity entity = opt.get();
+                    if (target.isInstance(entity)) {
+                        return constructPath(parent, neighbourCoordinate);
+                    }
+                }
+
+                queue.offer(neighbourCoordinate);
             }
         }
 
         return List.of();
     }
 
-    private boolean isValidCoordinate(Class<? extends Entity> target,
-                                      Coordinate coordinate,
-                                      int horizontal, int vertical) {
-        Entity entity = gameMap.getEntity(coordinate);
-        return (entity == null || target.isInstance(entity))
-                && !CoordinateUtils.isOutOfBounds(coordinate, horizontal, vertical);
+    private boolean isTargetOrEmptyCoordinate(Class<? extends Entity> target,
+                                              Coordinate coordinate) {
+        Optional<Entity> opt = gameMap.getEntity(coordinate);
+        return opt.map(target::isInstance).orElse(true);
     }
 
     private List<Coordinate> constructPath(Map<Coordinate, Coordinate> map,

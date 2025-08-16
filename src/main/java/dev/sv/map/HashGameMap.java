@@ -5,8 +5,11 @@ import dev.sv.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-public class HashGameMap implements GameMap {
+import static dev.sv.util.CoordinateUtils.isOutOfBounds;
+
+public final class HashGameMap implements GameMap {
 
     private final Map<Coordinate, Entity> entities;
     private final int horizontal;
@@ -19,23 +22,39 @@ public class HashGameMap implements GameMap {
     }
 
     @Override
-    public Entity getEntity(Coordinate coordinate) {
-        return entities.get(coordinate);
+    public Optional<Entity> getEntity(Coordinate coordinate) {
+        if (isOutOfBounds(coordinate, horizontal, vertical)) {
+            throw new IllegalArgumentException("Coordinate not found");
+        }
+
+        return Optional.ofNullable(entities.get(coordinate));
     }
 
     @Override
     public void putEntity(Coordinate coordinate, Entity entity) {
+        if (isOutOfBounds(coordinate, horizontal, vertical)) {
+            throw new IllegalArgumentException("Coordinate not found");
+        }
+
         entities.put(coordinate, entity);
     }
 
     @Override
     public void removeEntity(Coordinate coordinate) {
+        if (isOutOfBounds(coordinate, horizontal, vertical)) {
+            throw new IllegalArgumentException("Coordinate not found");
+        }
+
         entities.remove(coordinate);
     }
 
     @Override
-    public boolean contains(Coordinate coordinate) {
-        return !isEmptyCoordinate(coordinate);
+    public boolean containsEntity(Coordinate coordinate) {
+        if (isOutOfBounds(coordinate, horizontal, vertical)) {
+            throw new IllegalArgumentException("Coordinate not found");
+        }
+
+        return entities.getOrDefault(coordinate, null) != null;
     }
 
     @Override
@@ -46,10 +65,6 @@ public class HashGameMap implements GameMap {
     @Override
     public int getHorizontalBound() {
         return horizontal;
-    }
-
-    private boolean isEmptyCoordinate(Coordinate coordinate) {
-        return entities.getOrDefault(coordinate, null) == null;
     }
 
 }

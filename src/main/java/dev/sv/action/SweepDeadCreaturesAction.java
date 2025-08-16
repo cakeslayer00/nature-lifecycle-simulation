@@ -16,12 +16,11 @@ public class SweepDeadCreaturesAction extends Action {
     public void execute() {
         List<Creature> creatures = ActionUtils.gatherTargetEntities(gameMap, Creature.class);
 
-        creatures.forEach(creature -> {
+        for (Creature creature : creatures) {
             if (creature.isDead()) {
                 Coordinate pos = creature.getCoordinate();
                 gameMap.removeEntity(pos);
-                gameMap.putEntity(pos, null);
             }
-        });
+        }
     }
 }

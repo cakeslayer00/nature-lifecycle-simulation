@@ -20,7 +20,7 @@ public class InitialSpawnAction extends SpawnAction {
         spawn(gameMap, (_ -> new Rock()), ROCK_COUNT);
         spawn(gameMap, (_ -> new Grass()), GRASS_COUNT);
         spawn(gameMap, (_ -> new Tree()), TREE_COUNT);
-        spawn(gameMap, (coordinate -> new Predator(1, 1, 4, coordinate)), PREDATOR_COUNT);
-        spawn(gameMap, (coordinate -> new Prey(1, 1, coordinate)), PREY_COUNT);
+        spawn(gameMap, (coordinate -> new Prey(PREY_SPEED, PREY_HEALTH, coordinate)), PREY_COUNT);
+        spawn(gameMap, (coordinate -> new Predator(PREDATOR_SPEED, PREDATOR_HEALTH, PREDATOR_ATTACK_STRENGTH, coordinate)), PREDATOR_COUNT);
     }
 }
