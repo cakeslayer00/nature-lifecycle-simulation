@@ -25,4 +25,5 @@ public class MoveAction extends Action {
             creature.makeMove(gameMap, searchService);
         }
     }
+
 }

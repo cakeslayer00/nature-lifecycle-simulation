@@ -18,4 +18,5 @@ public interface GameMap {
     int getVerticalBound();
 
     int getHorizontalBound();
+
 }

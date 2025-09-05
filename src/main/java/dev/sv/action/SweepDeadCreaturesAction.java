@@ -8,6 +8,7 @@ import dev.sv.util.ActionUtils;
 import java.util.List;
 
 public class SweepDeadCreaturesAction extends Action {
+
     public SweepDeadCreaturesAction(GameMap gameMap) {
         super(gameMap);
     }
@@ -23,4 +24,5 @@ public class SweepDeadCreaturesAction extends Action {
             }
         }
     }
+
 }

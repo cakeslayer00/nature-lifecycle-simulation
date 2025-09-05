@@ -81,4 +81,5 @@ public abstract class Creature extends Entity {
     protected abstract void consume(GameMap gameMap, Coordinate targetCoordinate);
 
     protected abstract Class<? extends Entity> getTargetConsumption();
+
 }

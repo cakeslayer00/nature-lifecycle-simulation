@@ -32,4 +32,5 @@ public final class CoordinateUtils {
                 || pos.x() >= vertical
                 || pos.y() >= horizontal;
     }
+
 }

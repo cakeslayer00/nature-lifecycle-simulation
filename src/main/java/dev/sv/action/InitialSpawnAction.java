@@ -23,4 +23,5 @@ public class InitialSpawnAction extends SpawnAction {
         spawn(gameMap, (coordinate -> new Prey(PREY_SPEED, PREY_HEALTH, coordinate)), PREY_COUNT);
         spawn(gameMap, (coordinate -> new Predator(PREDATOR_SPEED, PREDATOR_HEALTH, PREDATOR_ATTACK_STRENGTH, coordinate)), PREDATOR_COUNT);
     }
+
 }

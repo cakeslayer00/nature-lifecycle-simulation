@@ -75,4 +75,5 @@ public class BFSSearchService implements SearchService {
         path.removeLast();
         return path.reversed();
     }
+
 }
