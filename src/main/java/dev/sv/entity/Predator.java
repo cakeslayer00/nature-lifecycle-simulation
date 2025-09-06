@@ -9,20 +9,24 @@ public class Predator extends Creature {
 
     private final int attackStrength;
 
-    public Predator(int speed, int health, int attackStrength, Coordinate coordinate) {
+    public Predator(int speed,
+            int health,
+            int attackStrength,
+            Coordinate coordinate) {
         super(speed, health, coordinate);
         this.attackStrength = attackStrength;
     }
 
     @Override
-    protected void consume(GameMap gameMap, Coordinate targetCoordinate) {
-        Class<Prey> target = getTargetConsumption();
+    protected void consume(GameMap gameMap,
+                           Coordinate targetCoordinate) {
+        Class<? extends Prey> target = getTargetConsumption();
         target.cast(gameMap.getEntity(targetCoordinate).orElseThrow()).getWounded(attackStrength);
         gainHealth(HEALTH_GAIN);
     }
 
     @Override
-    protected Class<Prey> getTargetConsumption() {
+    protected Class<? extends Prey> getTargetConsumption() {
         return Prey.class;
     }
 

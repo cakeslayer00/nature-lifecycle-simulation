@@ -22,7 +22,9 @@ public abstract class SpawnAction extends Action {
         this.random = new Random();
     }
 
-    protected void spawn(GameMap gameMap, Function<Coordinate, Entity> mapper, int amount) {
+    protected void spawn(GameMap gameMap, 
+                         Function<Coordinate, Entity> mapper, 
+                         int amount) {
         for (int i = 0; i < amount; i++) {
             Coordinate coordinate = getRandomEmptyCoordinate(gameMap);
             Entity entity = mapper.apply(coordinate);

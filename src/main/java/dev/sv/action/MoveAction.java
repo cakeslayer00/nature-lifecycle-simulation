@@ -12,7 +12,8 @@ public class MoveAction extends Action {
 
     private final SearchService searchService;
 
-    public MoveAction(GameMap gameMap, SearchService searchService) {
+    public MoveAction(GameMap gameMap, 
+                      SearchService searchService) {
         super(gameMap);
         this.searchService = searchService;
     }
