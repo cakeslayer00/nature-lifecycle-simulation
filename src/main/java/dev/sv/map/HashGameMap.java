@@ -15,7 +15,8 @@ public final class HashGameMap implements GameMap {
     private final int horizontal;
     private final int vertical;
 
-    public HashGameMap(int horizontal, int vertical) {
+    public HashGameMap(int horizontal, 
+                       int vertical) {
         this.horizontal = horizontal;
         this.vertical = vertical;
         this.entities = new HashMap<>();
@@ -31,7 +32,8 @@ public final class HashGameMap implements GameMap {
     }
 
     @Override
-    public void putEntity(Coordinate coordinate, Entity entity) {
+    public void putEntity(Coordinate coordinate, 
+                          Entity entity) {
         if (isOutOfBounds(coordinate, horizontal, vertical)) {
             throw new IllegalArgumentException("Coordinate not found");
         }

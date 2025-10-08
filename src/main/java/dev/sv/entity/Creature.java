@@ -24,7 +24,7 @@ public abstract class Creature extends Entity {
     }
 
     protected void move(GameMap gameMap,
-            SearchService searchService) {
+                        SearchService searchService) {
         List<Coordinate> path = searchService.search(this.coordinate, getTargetConsumption());
         Coordinate next = null;
         for (int i = 0; i < speed; i++) {
@@ -55,10 +55,10 @@ public abstract class Creature extends Entity {
     }
 
     public void makeMove(GameMap gameMap,
-            SearchService searchService) {
+                         SearchService searchService) {
         Optional<Coordinate> opt = getNearbyTargetPosition(gameMap);
         opt.ifPresentOrElse(position -> consume(gameMap, position),
-                            () -> move(gameMap, searchService));
+                () -> move(gameMap, searchService));
     }
 
     public void gainHealth(int health) {

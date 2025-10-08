@@ -20,7 +20,7 @@ public class Simulation {
     private static final String HELP = "h";
 
     private static final String CONTROLS_BANNER = "Controls: [ENTER/p] = pause/resume, [q] = quit, [h] = help";
-    private static final String DELIMITER = "----------------------";
+    private static final String DELIMITER = "---------------------------------";
 
     private static final String UNKNOWN_COMMAND_ACKNOWLEDGEMENT = "Unknown command: '%s'. Type 'h' for help.%n";
     private static final String SIMULATION_STOP_ACKNOWLEDGEMENT = "Stopping simulation...";

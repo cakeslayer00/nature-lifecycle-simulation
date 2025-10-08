@@ -5,20 +5,23 @@ import dev.sv.map.GameMap;
 
 public class Prey extends Creature {
 
-    public static final int HEALTH_GAIN = 2;
+    private static final int HEALTH_GAIN = 2;
 
-    public Prey(int speed, int health, Coordinate coordinate) {
+    public Prey(int speed, 
+                int health, 
+                Coordinate coordinate) {
         super(speed, health, coordinate);
     }
 
     @Override
-    protected void consume(GameMap gameMap, Coordinate targetCoordinate) {
+    protected void consume(GameMap gameMap, 
+                           Coordinate targetCoordinate) {
         gameMap.removeEntity(targetCoordinate);
         gainHealth(HEALTH_GAIN);
     }
 
     @Override
-    protected Class<Grass> getTargetConsumption() {
+    protected Class<? extends Grass> getTargetConsumption() {
         return Grass.class;
     }
 
