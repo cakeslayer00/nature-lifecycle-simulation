@@ -1,13 +1,20 @@
 # nature-lifecycle-simulation
 
-Natural cycle of things, predators consume carnivores, carnivores consume grass and stuff. Sole purpose is to build application based on OOP and SOLID principles. Used BFS algorithm for search.
+Small CLI application, showcasing lifecycle of prey and predators. Goal in mind was to develop applicaiton in OOP style, utilizing clean code principles
 
 # How to run
 
-1. Simply clone repository using `git clone https://github.com/cakeslayer00/nature-lifecycle-simulation`
-2. Enter directory `cd nature-lifecycle-simulation`
-3. Assuming you have maven and java installed in your system, use `mvn clean package` followed with `java -cp target/simulation-1.0-SNAPSHOT.jar -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Dconsole.encoding=UTF-8 dev.sv.Main` (though i think it won't work as anticipated, because encoding issues, so better run using Intelij)
-4. Enjoy!
+1. Clone and enter directory 
+```
+git clone https://github.com/cakeslayer00/nature-lifecycle-simulation && cd nature-lifecycle-simulation
+```
+2. Assuming you have maven and java installed in your system, use 
+```
+mvn clean package && java -cp target/simulation-1.0-SNAPSHOT.jar dev.sv.Main
+```
+(it might not render emoji properly, depends on terminal emulator you are using)
+
+3. Enjoy!
 
 # Credits
 
