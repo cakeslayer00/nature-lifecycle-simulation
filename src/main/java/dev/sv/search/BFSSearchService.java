@@ -20,7 +20,7 @@ public class BFSSearchService implements SearchService {
     @Override
     public List<Coordinate> search(Coordinate start,
                                    Class<? extends Entity> target) {
-        Queue<Coordinate> queue = new LinkedList<>(Collections.singleton(start));
+        Queue<Coordinate> queue = new ArrayDeque<>(Collections.singleton(start));
         Set<Coordinate> visited = new HashSet<>(Collections.singleton(start));
         Map<Coordinate, Coordinate> parent = new HashMap<>();
 
@@ -44,12 +44,10 @@ public class BFSSearchService implements SearchService {
                 visited.add(neighbourCoordinate);
                 parent.put(neighbourCoordinate, currentCoordinate);
 
-                Optional<Entity> opt = gameMap.getEntity(neighbourCoordinate);
+                Optional<Entity> opt = gameMap.getEntity(neighbourCoordinate).filter(target::isInstance);
+
                 if (opt.isPresent()) {
-                    Entity entity = opt.get();
-                    if (target.isInstance(entity)) {
-                        return constructPath(parent, neighbourCoordinate);
-                    }
+                    return constructPath(parent, neighbourCoordinate);
                 }
 
                 queue.offer(neighbourCoordinate);

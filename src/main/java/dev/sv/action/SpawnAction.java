@@ -6,6 +6,8 @@ import dev.sv.map.GameMap;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public abstract class SpawnAction extends Action {
 
@@ -22,14 +24,13 @@ public abstract class SpawnAction extends Action {
         this.random = new Random();
     }
 
-    protected void spawn(GameMap gameMap, 
-                         Function<Coordinate, Entity> mapper, 
+    protected void spawn(GameMap gameMap,
+                         Function<Coordinate, Entity> mapper,
                          int amount) {
-        for (int i = 0; i < amount; i++) {
-            Coordinate coordinate = getRandomEmptyCoordinate(gameMap);
-            Entity entity = mapper.apply(coordinate);
-            gameMap.putEntity(coordinate, entity);
-        }
+        IntStream.range(0, amount)
+                .mapToObj(_ -> getRandomEmptyCoordinate(gameMap))
+                .forEach(coordinate ->
+                        gameMap.putEntity(coordinate, mapper.apply(coordinate)));
     }
 
     private Coordinate getRandomEmptyCoordinate(GameMap gameMap) {

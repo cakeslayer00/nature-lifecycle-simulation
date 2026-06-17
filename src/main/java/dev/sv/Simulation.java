@@ -5,7 +5,8 @@ import dev.sv.map.GameMap;
 import dev.sv.renderer.Renderer;
 import dev.sv.search.SearchService;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Simulation {
@@ -14,19 +15,17 @@ public class Simulation {
     private static final int PAUSED_CHECK_DELAY_MS = 100;
     private static final int INITIAL_DELAY_MS = 3000;
 
-    private static final String EMPTY_INPUT = "";
-    private static final String PAUSE = "p";
-    private static final String QUIT = "q";
-    private static final String HELP = "h";
+    private static final char QUIT_KEY = 'q';
+    private static final char PAUSE_KEY = 'p';
+    private static final char SPACE_KEY = ' ';
+    private static final char ENTER_CR = '\r';
+    private static final char ENTER_LF = '\n';
 
-    private static final String CONTROLS_BANNER = "Controls: [ENTER/p] = pause/resume, [q] = quit, [h] = help";
-    private static final String DELIMITER = "------------------------------";
+    private static final String CONTROLS_BANNER = "Controls: [SPACE/p] pause/resume   [q] quit";
 
-    private static final String UNKNOWN_COMMAND_ACKNOWLEDGEMENT = "Unknown command: '%s'. Type 'h' for help.%n";
+    private static final String RUNNING_LABEL = "RUNNING";
+    private static final String PAUSED_LABEL = "PAUSED";
     private static final String SIMULATION_STOP_ACKNOWLEDGEMENT = "Stopping simulation...";
-    private static final String RESUMED_ACKNOWLEDGEMENT = "RESUMED";
-    private static final String PAUSED_ACKNOWLEDGEMENT = "PAUSED";
-    private static final String INPUT_ERROR_ACKNOWLEDGEMENT = "Input error: %s.%n";
 
     private static final String INPUT_HANDLER_NAME = "InputHandler";
 
@@ -53,24 +52,34 @@ public class Simulation {
                 new MaintenanceSpawnAction(gameMap)
         };
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            startInputHandler(scanner);
+        String originalTerminalSettings = enableRawMode();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> restoreMode(originalTerminalSettings)));
+
+        try {
+            startInputHandler();
 
             initialSpawn.execute();
-            renderer.render();
-            printDelimiter();
+            drawFrame();
             sleep(INITIAL_DELAY_MS);
 
+            boolean lastDrawnPaused = false;
             while (running.get()) {
                 if (!paused.get()) {
                     executeGameCycle(actions);
-                    renderer.render();
-                    printDelimiter();
+                    drawFrame();
+                    lastDrawnPaused = false;
                     sleep(SIMULATION_DELAY_MS);
                 } else {
+                    if (!lastDrawnPaused) {
+                        drawFrame();
+                        lastDrawnPaused = true;
+                    }
                     sleep(PAUSED_CHECK_DELAY_MS);
                 }
             }
+        } finally {
+            restoreMode(originalTerminalSettings);
+            System.out.println(SIMULATION_STOP_ACKNOWLEDGEMENT);
         }
     }
 
@@ -80,44 +89,58 @@ public class Simulation {
         }
     }
 
-    private void startInputHandler(Scanner scanner) {
-        Thread inputThread = new Thread(() -> {
-            printControls();
-            while (running.get()) {
-                try {
-                    String input = scanner.nextLine().trim().toLowerCase();
-                    handleInput(input);
-                } catch (Exception e) {
-                    System.err.printf(INPUT_ERROR_ACKNOWLEDGEMENT, e.getMessage());
-                }
-            }
-        }, INPUT_HANDLER_NAME);
+    private void drawFrame() {
+        String status = "Status: " + (paused.get() ? PAUSED_LABEL : RUNNING_LABEL);
+        renderer.render(List.of("", CONTROLS_BANNER, status));
+    }
+
+    private void startInputHandler() {
+        Thread inputThread = new Thread(
+                () -> {
+                    try {
+                        int key;
+                        while (running.get() && (key = System.in.read()) != -1) {
+                            handleInput((char) key);
+                        }
+                    } catch (IOException e) {
+                        running.set(false);
+                    }
+                },
+                INPUT_HANDLER_NAME);
 
         inputThread.setDaemon(true);
         inputThread.start();
     }
 
-    private void handleInput(String input) {
-        switch (input) {
-            case EMPTY_INPUT, PAUSE -> {
-                boolean nowPaused = paused.getAndSet(!paused.get());
-                System.out.println(nowPaused ? RESUMED_ACKNOWLEDGEMENT : PAUSED_ACKNOWLEDGEMENT);
-            }
-            case QUIT -> {
-                running.set(false);
-                System.out.println(SIMULATION_STOP_ACKNOWLEDGEMENT);
-            }
-            case HELP -> printControls();
-            default -> System.out.printf(UNKNOWN_COMMAND_ACKNOWLEDGEMENT, input);
+    private void handleInput(char key) {
+        switch (key) {
+            case SPACE_KEY, ENTER_CR, ENTER_LF, PAUSE_KEY -> paused.set(!paused.get());
+            case QUIT_KEY -> running.set(false);
         }
     }
 
-    private void printControls() {
-        System.out.println(CONTROLS_BANNER);
+    private String enableRawMode() {
+        String original = stty("-g");
+        stty("-icanon min 1 -echo");
+        return original;
     }
 
-    private void printDelimiter() {
-        System.out.println(DELIMITER);
+    private void restoreMode(String settings) {
+        if (settings != null && !settings.isEmpty()) {
+            stty(settings);
+        }
+    }
+
+    private String stty(String args) {
+        try (Process p = new ProcessBuilder("sh", "-c", "stty " + args + " < /dev/tty")
+                .redirectErrorStream(true)
+                .start()) {
+            String out = new String(p.getInputStream().readAllBytes()).trim();
+            p.waitFor();
+            return out;
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private void sleep(int milliseconds) {
