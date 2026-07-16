@@ -2,6 +2,9 @@
 
 Small CLI application, showcasing lifecycle of prey and predators. Goal in mind was to develop applicaiton in OOP style, utilizing clean code principles
 
+<img width="928" height="775" alt="image" src="https://github.com/user-attachments/assets/54dac888-66fc-4a47-8227-3e6368a08dee" />
+
+
 # requirements
 
 - `JDK 26`
